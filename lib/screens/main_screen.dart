@@ -7,6 +7,7 @@ import '../utils/constants.dart';
 import '../utils/models/soldier_model.dart';
 import '../utils/themes/color_manager.dart';
 import '../utils/themes/text_manager.dart';
+import '../utils/widgets/sizedbox_widget.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -19,6 +20,9 @@ class _MainScreenState extends State<MainScreen> {
   Stream<List<Soldier>>? _soldiersStream;
 
   int _selectedSoldierIndex = 0;
+  // final int _alertSoldierIndex = 0;
+  bool _isAlert = false;
+  Soldier? _alertSoldier;
 
   @override
   void initState() {
@@ -96,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
         padding: const EdgeInsets.only(left: 32.0),
         child: Text('Soldier Health Monitor', style: TextManager.main19),
       ),
-      backgroundColor: ColorManager.background,
+      backgroundColor: _isAlert ? ColorManager.error : ColorManager.background,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.0),
         child: Container(
@@ -107,21 +111,46 @@ class _MainScreenState extends State<MainScreen> {
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 32.0),
-          child: IconButton(
-            onPressed: () {
-              final db = FirebaseFirestore.instance;
-              db.collection('soldiers').add({
-                'name': '하지원',
-                'lat': 37.239485,
-                'lng': 127.083531,
-                'temp': 38,
-                'bpm': 130,
-              }).then((value) => print('Soldier added with ID: ${value.id}'));
-            },
-            icon: Icon(
-              Icons.notifications,
-              color: ColorManager.grey,
-            ),
+          child: Row(
+            children: [
+              if (_isAlert) ...[
+                Text('훈련병 ${_alertSoldier?.name}의 상태에 이상이 있습니다.',
+                    style: TextManager.main17),
+                const Width(8),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _isAlert = false;
+                    });
+                  },
+                  style: TextButton.styleFrom(
+                    side: BorderSide(color: ColorManager.white, width: 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text('확인', style: TextManager.main17),
+                ),
+              ],
+              const Width(16),
+              IconButton(
+                onPressed: () {
+                  final db = FirebaseFirestore.instance;
+                  db.collection('soldiers').add({
+                    'name': '하지원',
+                    'lat': 37.239485,
+                    'lng': 127.083531,
+                    'temp': 38,
+                    'bpm': 130,
+                  }).then(
+                      (value) => print('Soldier added with ID: ${value.id}'));
+                },
+                icon: Icon(
+                  Icons.notifications,
+                  color: ColorManager.grey,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -129,11 +158,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _buildSoldierList(List<Soldier> soldiers) {
-    return soldiers
-        .map((soldier) => GestureDetector(
-            onTap: () => onSoldierTilePressed(soldiers.indexOf(soldier)),
-            child: SoldierTile(soldier: soldier)))
-        .toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkForAlert(soldiers);
+    });
+    return soldiers.map((soldier) {
+      return GestureDetector(
+          onTap: () => onSoldierTilePressed(soldiers.indexOf(soldier)),
+          child: SoldierTile(soldier: soldier));
+    }).toList();
   }
 
   void onSoldierTilePressed(int index) {
@@ -141,6 +173,23 @@ class _MainScreenState extends State<MainScreen> {
       _selectedSoldierIndex = index;
     });
     // print('Selected soldier: ${_soldiers[_selectedSoldierIndex].name}');
+  }
+
+  void checkForAlert(List<Soldier> soldiers) {
+    for (var soldier in soldiers) {
+      if (soldier.temp > 37 || (soldier.bpm > 190 || soldier.bpm < 40)) {
+        setState(() {
+          _isAlert = true;
+          _alertSoldier = soldier;
+        });
+        break;
+      } else {
+        setState(() {
+          _isAlert = false;
+          _alertSoldier = null;
+        });
+      }
+    }
   }
 
   Stream<List<Soldier>> getSoldiers() async* {
