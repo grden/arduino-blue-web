@@ -4,7 +4,6 @@ import 'package:ard_blue_web/utils/models/soldier_model.dart';
 import 'package:ard_blue_web/utils/themes/color_manager.dart';
 import 'package:ard_blue_web/utils/themes/text_manager.dart';
 import 'package:ard_blue_web/utils/widgets/sizedbox_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 import 'package:flutter/material.dart';
