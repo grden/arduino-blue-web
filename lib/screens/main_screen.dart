@@ -159,7 +159,7 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> _buildSoldierList(List<Soldier> soldiers) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkForAlert(soldiers);
+      checkForAlerts(soldiers);
     });
     return soldiers.map((soldier) {
       return GestureDetector(
@@ -175,7 +175,7 @@ class _MainScreenState extends State<MainScreen> {
     // print('Selected soldier: ${_soldiers[_selectedSoldierIndex].name}');
   }
 
-  void checkForAlert(List<Soldier> soldiers) {
+  void checkForAlerts(List<Soldier> soldiers) {
     for (var soldier in soldiers) {
       if (soldier.temp > 37 || (soldier.bpm > 190 || soldier.bpm < 40)) {
         setState(() {
