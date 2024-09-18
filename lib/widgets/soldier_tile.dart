@@ -18,20 +18,30 @@ class SoldierTile extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  'assets/images/default_profile.png',
-                  fit: BoxFit.fill,
+            Stack(children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    'assets/images/default_profile.png',
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
-            ),
+              if (checkForAlert(soldier))
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                  child: Icon(Icons.error, color: ColorManager.error, size: 28),
+                ),
+            ]),
             const Width(16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,5 +55,13 @@ class SoldierTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool checkForAlert(Soldier soldier) {
+    if (soldier.temp > 37 || (soldier.bpm > 190 || soldier.bpm < 40)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
