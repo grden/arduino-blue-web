@@ -121,9 +121,20 @@ class _InfoFragmentState extends State<InfoFragment> {
             '심박수',
             style: TextManager.second17,
           ),
-          Text(
-            '${widget._soldier.bpm.toString()} bpm',
-            style: TextManager.main23,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '${widget._soldier.bpm.toString()} bpm',
+                style: TextManager.main23,
+              ),
+              const Width(12),
+              if (widget._soldier.bpm > 190 || widget._soldier.bpm < 40)
+                Text(
+                  '심박수가 정상 범위 밖입니다.',
+                  style: TextManager.error17,
+                ),
+            ],
           ),
           SizedBox(
             height: 150,
