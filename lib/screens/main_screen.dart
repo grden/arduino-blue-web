@@ -95,11 +95,27 @@ class _MainScreenState extends State<MainScreen> {
   AppBar _buildAppBar() {
     return AppBar(
       centerTitle: false,
-      titleSpacing: 0,
-      title: Padding(
+      titleSpacing: 16,
+      leading: Padding(
         padding: const EdgeInsets.only(left: 32.0),
-        child: Text('Soldier Health Monitor', style: TextManager.main19),
+        child: IconButton(
+          hoverColor: Colors.transparent,
+          onPressed: () {
+            db.collection('soldiers').add({
+              'name': '오해원',
+              'lat': 37.239485,
+              'lng': 127.083531,
+              'temp': 38,
+              'bpm': 130,
+            }).then((value) => print('Soldier added with ID: ${value.id}'));
+          },
+          icon: Icon(
+            Icons.favorite,
+            color: ColorManager.white,
+          ),
+        ),
       ),
+      title: Text('Soldier Health Monitor', style: TextManager.main19),
       backgroundColor: _isAlert ? ColorManager.error : ColorManager.background,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.0),
@@ -132,24 +148,6 @@ class _MainScreenState extends State<MainScreen> {
                   child: Text('확인', style: TextManager.main17),
                 ),
               ],
-              const Width(16),
-              IconButton(
-                onPressed: () {
-                  final db = FirebaseFirestore.instance;
-                  db.collection('soldiers').add({
-                    'name': '하지원',
-                    'lat': 37.239485,
-                    'lng': 127.083531,
-                    'temp': 38,
-                    'bpm': 130,
-                  }).then(
-                      (value) => print('Soldier added with ID: ${value.id}'));
-                },
-                icon: Icon(
-                  Icons.notifications,
-                  color: ColorManager.grey,
-                ),
-              ),
             ],
           ),
         ),
