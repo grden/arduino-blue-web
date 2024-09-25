@@ -44,8 +44,8 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static FirebaseOptions web = FirebaseOptions(
-    apiKey: dotenv.env['FIREBASE_API_KEY_WEB']!,
+  static FirebaseOptions web = const FirebaseOptions(
+    apiKey: 'AIzaSyDMlwDSXf9M60Y-jmQtaPU0l7FUAS8VVhE',
     appId: '1:710654200487:web:f14ab8215dc6a64cf6e982',
     messagingSenderId: '710654200487',
     projectId: 'ard-blue-project',
