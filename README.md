@@ -1,16 +1,23 @@
 # ard_blue_web
 
-A new Flutter project.
+Project for 2024 Creative Innovation Contest, College of Electronics & Information.<br>
+<br>
+This repository only contains website part of the project. Repository for the website is [here](https://github.com/grden/arduino-blue-app).
 
-## Getting Started
+## Introduction
 
-This project is a starting point for a Flutter application.
+Researchers highlight the urgent need for improved heat illness prevention measures in the Korean army due to increasing temperatures linked to global warming and other environmental changes.<br>
+<br>
+To address this, we proposed a solution centered around providing objective data. By sending objective data to the command control center, heat illness-related incidents could be prevented in advance.<br>
+<br>
+As a result, we developed a watch capable of detecting safety information from soldiers and notifying both the soldiers and command control centers through a mobile app and website.<br>
+<br>
+<img width="1133" alt="preview" src="https://github.com/user-attachments/assets/477e5561-b2ce-4d68-9fac-f7d37b7c2d81">
 
-A few resources to get you started if this is your first Flutter project:
+## Service Architecture
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<img width="1131" alt="architecture" src="https://github.com/user-attachments/assets/dd548151-e72e-48d6-9233-d8dda4983797">
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Preview
+
+You can try out the website [here](https://ard-blue-project.web.app/). Contents are subject to change.
