@@ -20,4 +20,5 @@ As a result, we developed a watch capable of detecting safety information from s
 
 ## Preview
 
-You can try out the website [here](https://ard-blue-project.web.app/). Contents are subject to change.
+You can try out the website here:<br>
+<https://ard-blue-project.web.app/>. Contents are subject to change.
