@@ -2,7 +2,7 @@
 
 Project for 2024 Creative Innovation Contest, College of Electronics & Information.<br>
 <br>
-This repository only contains website part of the project. Repository for the website is [here](https://github.com/grden/arduino-blue-app).
+This repository only contains website part of the project. Repository for the mobile app is [here](https://github.com/grden/arduino-blue-app).
 
 ## Introduction
 
