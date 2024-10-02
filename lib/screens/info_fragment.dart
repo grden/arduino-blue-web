@@ -50,7 +50,7 @@ class _InfoFragmentState extends State<InfoFragment> {
     _subscription = getSoldier(widget._soldier.id).listen((updatedSoldier) {
       if (!mounted) return;
       setState(() {
-        if (_heartRateData.length >= 30) {
+        if (_heartRateData.length >= 60) {
           _heartRateData.removeAt(0);
           // Shift x-values of remaining data points
           for (int i = 0; i < _heartRateData.length; i++) {
@@ -183,7 +183,7 @@ class _InfoFragmentState extends State<InfoFragment> {
                       borderData: FlBorderData(show: false),
                       gridData: const FlGridData(show: false),
                       minX: 0,
-                      maxX: 29,
+                      maxX: 59,
                       minY: 0,
                       maxY: 200, // Assuming max heart rate of 200 bpm
                     ),
