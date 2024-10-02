@@ -28,39 +28,50 @@ class InfoFragment extends StatefulWidget {
 
 class _InfoFragmentState extends State<InfoFragment> {
   final List<FlSpot> _heartRateData = [];
-  // late Timer _timer;
-  late StreamSubscription<Soldier> _subscription;
-
+  StreamSubscription<Soldier>? _subscription;
   GoogleMapController? _mapController;
 
   @override
   void initState() {
     super.initState();
-    // Initialize with current BPM
-    _heartRateData.add(FlSpot(0, widget._soldier.bpm.toDouble()));
+    _initializeHeartRateData();
+  }
 
-    // Update data every second
-    // _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-    //   setState(() {
-    //     if (_heartRateData.length >= 60) _heartRateData.removeAt(0);
-    //     _heartRateData.add(FlSpot(
-    //         _heartRateData.length.toDouble(), widget._soldier.bpm.toDouble()));
-    //   });
-    // });
+  void _initializeHeartRateData() {
+    if (!mounted) return;
 
+    setState(() {
+      _heartRateData.clear();
+      // Add initial data point to prevent the 'mostLeftSpot' error
+      _heartRateData.add(FlSpot(0, widget._soldier.bpm.toDouble()));
+    });
+
+    _subscription?.cancel();
     _subscription = getSoldier(widget._soldier.id).listen((updatedSoldier) {
+      if (!mounted) return;
       setState(() {
         if (_heartRateData.length >= 60) _heartRateData.removeAt(0);
         _heartRateData.add(FlSpot(
             _heartRateData.length.toDouble(), updatedSoldier.bpm.toDouble()));
       });
+    }, onError: (error) {
+      print('Error fetching soldier data: $error');
     });
   }
 
   @override
+  void didUpdateWidget(InfoFragment oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget._selectedSoldierIndex != oldWidget._selectedSoldierIndex) {
+      _subscription?.cancel();
+      _initializeHeartRateData();
+    }
+  }
+
+  @override
   void dispose() {
-    // _timer.cancel();
-    _subscription.cancel();
+    _subscription?.cancel();
+    _mapController?.dispose();
     super.dispose();
   }
 
@@ -138,37 +149,39 @@ class _InfoFragmentState extends State<InfoFragment> {
           ),
           SizedBox(
             height: 150,
-            child: LineChart(
-              LineChartData(
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: _heartRateData,
-                    isCurved: true,
-                    color: ColorManager.highlight,
-                    barWidth: 4,
-                    dotData: const FlDotData(show: false),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          ColorManager.highlight.withOpacity(0.1),
-                          ColorManager.highlight.withOpacity(0.0),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
+            child: _heartRateData.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : LineChart(
+                    LineChartData(
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: _heartRateData,
+                          isCurved: true,
+                          color: ColorManager.highlight,
+                          barWidth: 4,
+                          dotData: const FlDotData(show: false),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            gradient: LinearGradient(
+                              colors: [
+                                ColorManager.highlight.withOpacity(0.1),
+                                ColorManager.highlight.withOpacity(0.0),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+                        ),
+                      ],
+                      titlesData: const FlTitlesData(show: false),
+                      borderData: FlBorderData(show: false),
+                      gridData: const FlGridData(show: false),
+                      minX: 0,
+                      maxX: 59,
+                      minY: 0,
+                      maxY: 200, // Assuming max heart rate of 200 bpm
                     ),
                   ),
-                ],
-                titlesData: const FlTitlesData(show: false),
-                borderData: FlBorderData(show: false),
-                gridData: const FlGridData(show: false),
-                minX: 0,
-                maxX: 59,
-                minY: 0,
-                maxY: 200, // Assuming max heart rate of 200 bpm
-              ),
-            ),
           ),
         ],
       ),
@@ -183,7 +196,7 @@ class _InfoFragmentState extends State<InfoFragment> {
         Text('${widget._soldier.temp.toString()} °C',
             style: TextManager.inverse17),
         const Width(12),
-        if (widget._soldier.temp > 37)
+        if (widget._soldier.temp > 42)
           Text(
             '체온이 정상보다 높습니다.',
             style: TextManager.error17,
