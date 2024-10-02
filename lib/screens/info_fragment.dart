@@ -50,7 +50,13 @@ class _InfoFragmentState extends State<InfoFragment> {
     _subscription = getSoldier(widget._soldier.id).listen((updatedSoldier) {
       if (!mounted) return;
       setState(() {
-        if (_heartRateData.length >= 60) _heartRateData.removeAt(0);
+        if (_heartRateData.length >= 30) {
+          _heartRateData.removeAt(0);
+          // Shift x-values of remaining data points
+          for (int i = 0; i < _heartRateData.length; i++) {
+            _heartRateData[i] = FlSpot(i.toDouble(), _heartRateData[i].y);
+          }
+        }
         _heartRateData.add(FlSpot(
             _heartRateData.length.toDouble(), updatedSoldier.bpm.toDouble()));
       });
@@ -177,7 +183,7 @@ class _InfoFragmentState extends State<InfoFragment> {
                       borderData: FlBorderData(show: false),
                       gridData: const FlGridData(show: false),
                       minX: 0,
-                      maxX: 59,
+                      maxX: 29,
                       minY: 0,
                       maxY: 200, // Assuming max heart rate of 200 bpm
                     ),
@@ -196,7 +202,7 @@ class _InfoFragmentState extends State<InfoFragment> {
         Text('${widget._soldier.temp.toString()} °C',
             style: TextManager.inverse17),
         const Width(12),
-        if (widget._soldier.temp > 42)
+        if (widget._soldier.temp > 36)
           Text(
             '체온이 정상보다 높습니다.',
             style: TextManager.error17,
